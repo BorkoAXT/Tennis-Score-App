@@ -1,3 +1,5 @@
+using System.Drawing.Text;
+
 namespace Tennis_App
 {
     public partial class ScoreForm : Form
@@ -28,12 +30,14 @@ namespace Tennis_App
             // 
             labelTennisScore.AutoSize = true;
             labelTennisScore.Font = new Font("Segoe UI", 20F);
-            labelTennisScore.Location = new Point(304, 9);
+            labelTennisScore.ImageAlign = ContentAlignment.TopCenter;
+            labelTennisScore.Location = new Point(324, 9);
             labelTennisScore.Name = "labelTennisScore";
-            labelTennisScore.Size = new Size(206, 46);
+            labelTennisScore.RightToLeft = RightToLeft.No;
+            labelTennisScore.Size = new Size(162, 37);
             labelTennisScore.TabIndex = 0;
             labelTennisScore.Text = "Tennis Score";
-            labelTennisScore.Click += label1_Click;
+            labelTennisScore.TextAlign = ContentAlignment.TopCenter;
             // 
             // labelRanking
             // 
@@ -41,13 +45,13 @@ namespace Tennis_App
             labelRanking.Font = new Font("Segoe UI", 13F);
             labelRanking.Location = new Point(127, 54);
             labelRanking.Name = "labelRanking";
-            labelRanking.Size = new Size(90, 30);
+            labelRanking.Size = new Size(76, 25);
             labelRanking.TabIndex = 1;
             labelRanking.Text = "Ranking";
-            labelRanking.Click += label2_Click;
             // 
             // listViewRanking
             // 
+            listViewRanking.BackColor = Color.Coral;
             listViewRanking.Columns.AddRange(new ColumnHeader[] { playerNameColumn, scoreColumn });
             listViewRanking.Location = new Point(127, 99);
             listViewRanking.Name = "listViewRanking";
@@ -55,7 +59,7 @@ namespace Tennis_App
             listViewRanking.TabIndex = 2;
             listViewRanking.UseCompatibleStateImageBehavior = false;
             listViewRanking.View = View.Details;
-            listViewRanking.SelectedIndexChanged += RankingTable_SelectedIndexChanged;
+            listViewRanking.DoubleClick += ViewProfileButtonClick;
             // 
             // playerNameColumn
             // 
@@ -63,7 +67,7 @@ namespace Tennis_App
             // 
             // scoreColumn
             // 
-            scoreColumn.Text = "scoreColumn";
+            scoreColumn.Text = "Score";
             scoreColumn.TextAlign = HorizontalAlignment.Right;
             // 
             // labelClickOnName
@@ -71,12 +75,13 @@ namespace Tennis_App
             labelClickOnName.AutoSize = true;
             labelClickOnName.Location = new Point(127, 223);
             labelClickOnName.Name = "labelClickOnName";
-            labelClickOnName.Size = new Size(476, 20);
+            labelClickOnName.Size = new Size(381, 15);
             labelClickOnName.TabIndex = 3;
             labelClickOnName.Text = "*click on a player's name to see more information about their matches.";
             // 
             // listViewLatestGames
             // 
+            listViewLatestGames.BackColor = Color.Coral;
             listViewLatestGames.Columns.AddRange(new ColumnHeader[] { firstPlayerColumn, secondPlayerColumn, winnerColumn, totalScoreColumn });
             listViewLatestGames.Location = new Point(127, 313);
             listViewLatestGames.Name = "listViewLatestGames";
@@ -99,7 +104,7 @@ namespace Tennis_App
             // 
             // totalScoreColumn
             // 
-            totalScoreColumn.Text = "scoreColumn";
+            totalScoreColumn.Text = "Total Score";
             // 
             // labelLatestGames
             // 
@@ -107,7 +112,7 @@ namespace Tennis_App
             labelLatestGames.Font = new Font("Segoe UI", 13F);
             labelLatestGames.Location = new Point(127, 267);
             labelLatestGames.Name = "labelLatestGames";
-            labelLatestGames.Size = new Size(141, 30);
+            labelLatestGames.Size = new Size(117, 25);
             labelLatestGames.TabIndex = 5;
             labelLatestGames.Text = "Latest Games";
             // 
@@ -123,6 +128,7 @@ namespace Tennis_App
             // 
             // ScoreForm
             // 
+            BackColor = Color.Khaki;
             ClientSize = new Size(820, 489);
             Controls.Add(buttonAddNewGame);
             Controls.Add(labelLatestGames);
@@ -132,60 +138,36 @@ namespace Tennis_App
             Controls.Add(labelRanking);
             Controls.Add(labelTennisScore);
             Name = "ScoreForm";
+            RightToLeftLayout = true;
             Load += OnLoad;
             ResumeLayout(false);
             PerformLayout();
         }
 
-        private void label1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label2_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void RankingTable_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
         private static Dictionary<string, int> playersWithPoints = new();
-
-
-        private static Dictionary<(string, int), List<(string, int)>> games = new()
-        {
-            { ("G. Dimitrov", 3), new List<(string, int)>{("R. Nadal", 2)} }
-        };
+        private static Dictionary<(string, int), List<(string, int)>> games = new();
 
         private void OnLoad(object sender, EventArgs e)
         {
             FillRankingListView();
             FillLatestGamesListView();
         }
+
         private void FillRankingListView()
         {
-            this.listViewRanking.Items.Clear();
+            listViewRanking.Items.Clear();
             foreach (var player in playersWithPoints.OrderByDescending(x => x.Value))
             {
-                string playerName = player.Key;
-                string playerPoints = player.Value.ToString();
-
-                ListViewItem rollInRankingListView = new();
-
-                rollInRankingListView.SubItems[0].Text = playerName;
-                rollInRankingListView.SubItems.Add(playerPoints);
-
-                this.listViewRanking.Items.Add(rollInRankingListView);
+                ListViewItem item = new ListViewItem(player.Key);
+                item.SubItems.Add(player.Value.ToString());
+                listViewRanking.Items.Add(item);
             }
         }
+
         private void FillLatestGamesListView()
         {
-            this.listViewLatestGames.Items.Clear();
-
-
-            foreach (var game in games.ToArray())
+            listViewLatestGames.Items.Clear();
+            foreach (var game in games)
             {
                 foreach (var item in game.Value)
                 {
@@ -193,35 +175,23 @@ namespace Tennis_App
                 }
             }
         }
+
         private void FillListView((string, int) firstPlayer, (string, int) secondPlayer)
         {
             string winner = GetWinner(firstPlayer, secondPlayer);
 
-            ListViewItem rollInLatestGamesListView = new();
-            rollInLatestGamesListView.SubItems[0].Text = firstPlayer.Item1;
-            rollInLatestGamesListView.SubItems.Add(secondPlayer.Item1);
-            rollInLatestGamesListView.SubItems.Add(winner);
-            rollInLatestGamesListView.SubItems.Add($"{firstPlayer.Item1} - {secondPlayer.Item1})");
+            ListViewItem item = new ListViewItem(firstPlayer.Item1);
+            item.SubItems.Add(secondPlayer.Item1);
+            item.SubItems.Add(winner);
+            item.SubItems.Add($"{firstPlayer.Item2} - {secondPlayer.Item2}");
 
-            this.listViewLatestGames.Items.Add(rollInLatestGamesListView);
+            listViewLatestGames.Items.Add(item);
         }
+
         private string GetWinner((string, int) firstPlayer, (string, int) secondPlayer)
         {
-            if (firstPlayer.Item2 < secondPlayer.Item2)
-            {
-                return firstPlayer.Item1;
-            }
-            else if (firstPlayer.Item2 > secondPlayer.Item2)
-            {
-                return secondPlayer.Item1;
-            }
-            else
-            {
-                return "Draw";
-            }
+            return firstPlayer.Item2 > secondPlayer.Item2 ? firstPlayer.Item1 : secondPlayer.Item1;
         }
-
-        
 
         private void AddNewGameButtonClick(object sender, EventArgs e)
         {
@@ -229,18 +199,65 @@ namespace Tennis_App
             {
                 if (newGameForm.ShowDialog() == DialogResult.OK)
                 {
-                    //AddNewGame(newGameForm.FirstPlayer, newGameForm.SecondPlayer);
+                    AddNewGame(newGameForm.FirstPlayer, newGameForm.SecondPlayer);
                 }
             }
         }
+
         private void AddNewGame((string, int) firstPlayer, (string, int) secondPlayer)
         {
-            //FillGamesData(firstPlayer, secondPlayer);
-
-            //FillPlayerWithPoints(firstPlayer);
-            //FillPlayerWithPoints(secondPlayer);
-
-            //FillRanking
+            FillGamesData(firstPlayer, secondPlayer);
+            FillPlayerWithPoints(firstPlayer);
+            FillPlayerWithPoints(secondPlayer);
+            FillRankingListView();
+            FillLatestGamesListView();
         }
+
+        private void FillGamesData((string, int) firstPlayer, (string, int) secondPlayer)
+        {
+            if (!games.ContainsKey(firstPlayer))
+            {
+                games[firstPlayer] = new List<(string, int)>();
+            }
+            games[firstPlayer].Add(secondPlayer);
+        }
+
+        private void FillPlayerWithPoints((string, int) player)
+        {
+            if (playersWithPoints.ContainsKey(player.Item1))
+            {
+                playersWithPoints[player.Item1] += player.Item2;
+            }
+            else
+            {
+                playersWithPoints[player.Item1] = player.Item2;
+            }
+        }
+    
+
+
+private void ViewProfileButtonClick(object sender, EventArgs e)
+        {
+            ListViewItem selectedRow = this.listViewRanking.SelectedItems[0];
+
+            ListViewItem.ListViewSubItem playerNameCell = selectedRow.SubItems[0];
+
+            string playerName = playerNameCell.Text;
+
+            using (PlayerInfoForm playerInfoForm = new PlayerInfoForm(playerName, GetPlayerGames(playerName)))
+            {
+                playerInfoForm.ShowDialog();
+            }
+
+
+
+        }
+        private Dictionary<(string, int), List<(string, int)>> GetPlayerGames(string playerName) => games.Where(x => x.Key.Item1 == playerName
+        || x.Value.Any(y => y.Item1 == playerName)).ToDictionary(x => x.Key, x => x.Value.Where(y => y.Item1 == playerName || x.Key.Item1 == playerName).ToList());
+
+
+        
+
+        
     }
 }
