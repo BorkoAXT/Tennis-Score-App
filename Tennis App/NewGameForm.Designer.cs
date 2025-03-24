@@ -61,7 +61,6 @@
             labelNewGame.TabIndex = 0;
             labelNewGame.Text = "New Game";
             labelNewGame.TextAlign = ContentAlignment.TopCenter;
-            labelNewGame.Click += label1_Click;
             // 
             // labelFirstPlayerName
             // 
@@ -111,7 +110,7 @@
             buttonSaveGame.Location = new Point(253, 274);
             buttonSaveGame.Margin = new Padding(3, 2, 3, 2);
             buttonSaveGame.Name = "buttonSaveGame";
-            buttonSaveGame.Size = new Size(161, 29);
+            buttonSaveGame.Size = new Size(161, 42);
             buttonSaveGame.TabIndex = 5;
             buttonSaveGame.Text = "Save";
             buttonSaveGame.UseVisualStyleBackColor = false;
@@ -223,7 +222,6 @@
             Margin = new Padding(3, 2, 3, 2);
             Name = "NewGameForm";
             Text = "NewGameForm";
-            Load += NewGameForm_Load;
             ((System.ComponentModel.ISupportInitialize)numericUpDownSecondPlayerPoints).EndInit();
             ((System.ComponentModel.ISupportInitialize)numericUpDownFirstPlayerPoints).EndInit();
             ((System.ComponentModel.ISupportInitialize)firstPlayerNameErrorProvider).EndInit();

@@ -22,12 +22,7 @@
             base.Dispose(disposing);
 
         }
-        //private void InitializeComponent()
-        //{
-        //    Load += OnLoad;
-        //    ResumeLayout(false);
-        //    PerformLayout();
-        //}
+        
 
         private Label labelTennisScore;
         private Label labelRanking;
@@ -42,5 +37,6 @@
         private ColumnHeader totalScoreColumn;
         private Label labelLatestGames;
         private Button buttonAddNewGame;
+        private Button ClearButton;
     }
 }

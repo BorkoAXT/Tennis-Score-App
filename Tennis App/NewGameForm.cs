@@ -16,15 +16,9 @@ namespace Tennis_App
         {
             InitializeComponent();
         }
+        public (string name, int points) FirstPlayer { get; set; }
 
-        private void label1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        public (string, int) FirstPlayer { get; set; }
-
-        public (string, int) SecondPlayer { get; set; }
+        public (string name, int points) SecondPlayer { get; set; }
 
         private void ButtonSaveGameClick(object sender, EventArgs e)
         {
@@ -48,15 +42,8 @@ namespace Tennis_App
         }
 
         private bool CheckIfInputsAreValid() => !CheckIfPlayerNamesAreEmpty() && !CheckIfPlayerNamesAreSame();
-
-        private bool CheckIfPlayerNamesAreEmpty() => string.IsNullOrEmpty(this.FirstPlayer.Item1) || string.IsNullOrEmpty(this.SecondPlayer.Item1);
-        private bool CheckIfPlayerNamesAreSame() => this.FirstPlayer.Item1 == this.SecondPlayer.Item1;
-
-        private void errorProvider1_RightToLeftChanged(object sender, EventArgs e)
-        {
-
-        }
-
+        private bool CheckIfPlayerNamesAreEmpty() => string.IsNullOrEmpty(this.FirstPlayer.name) || string.IsNullOrEmpty(this.SecondPlayer.name);
+        private bool CheckIfPlayerNamesAreSame() => this.FirstPlayer.name == this.SecondPlayer.name;
         private void ValidatePlayerName(object sender, CancelEventArgs e)
         {
             TextBox textBox = (TextBox)sender;
@@ -113,12 +100,5 @@ namespace Tennis_App
                 this.labelSameNamesErrorMessage.Text = string.Empty;
             }
         }
-
-        private void NewGameForm_Load(object sender, EventArgs e)
-        {
-
-        }
-
-        
     }
 }

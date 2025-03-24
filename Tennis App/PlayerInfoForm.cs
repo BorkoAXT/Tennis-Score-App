@@ -1,22 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-
-namespace Tennis_App
+﻿namespace Tennis_App
 {
     public partial class PlayerInfoForm : Form
     {
-        private string playerName;
-        private Dictionary<(string, int), List<(string, int)>> games = new();
-        private (string, int) currentPlayer = new();
-        private (string, int) competitor = new();
-        public PlayerInfoForm(string playerName, Dictionary<(string, int), List<(string, int)>> games)
+        private readonly string playerName;
+        private Dictionary<(string name, int points), List<(string name, int points)>> games = [];
+        private (string name, int points) currentPlayer = new();
+        private (string name, int points) competitor = new();
+        public PlayerInfoForm(string playerName, Dictionary<(string name, int points), List<(string name, int points)>> games)
         {
             InitializeComponent();
             this.playerName = playerName;
@@ -27,14 +17,14 @@ namespace Tennis_App
         private void FillVictoriesAndLossesListViews()
         {
             ClearListViews();
-            foreach ( var game in games)
+            foreach (var game in games)
             {
-                string firstPlayerName = game.Key.Item1;
-                int firstPlayerPoints = game.Key.Item2;
-                foreach (var item in game.Value)
+                string firstPlayerName = game.Key.name;
+                int firstPlayerPoints = game.Key.points;
+                foreach (var (name, points) in game.Value)
                 {
-                    string secondPlayerName = item.Item1;
-                    int secondPlayerPoints = item.Item2;
+                    string secondPlayerName = name;
+                    int secondPlayerPoints = points;
 
                     (this.currentPlayer, this.competitor) = GetCurrentPlayerAndCompetitor((firstPlayerName, firstPlayerPoints), (secondPlayerName, secondPlayerPoints)); 
                      UpdateListView();
@@ -42,15 +32,16 @@ namespace Tennis_App
                 }
             }
         }
+
         private void ClearListViews()
         {
             this.listViewDraw.Items.Clear();
             this.listViewLosses.Items.Clear();
             this.listViewVictories.Items.Clear();
         }
-        private ((string, int), (string, int)) GetCurrentPlayerAndCompetitor ((string, int) firstPlayer, (string, int) secondPlayer)
+        private ((string name, int points), (string name, int points)) GetCurrentPlayerAndCompetitor ((string name, int points) firstPlayer, (string name, int points) secondPlayer)
         {
-            if (firstPlayer.Item1 == playerName)
+            if (firstPlayer.name == playerName)
             {
                 return (firstPlayer, secondPlayer);
             }
@@ -58,9 +49,9 @@ namespace Tennis_App
         }
         private void UpdateListView()
         {
-            string competitorName = competitor.Item1;
-            int currentPlayerPoints = currentPlayer.Item2;
-            int competitorPoints = competitor.Item2;
+            string competitorName = competitor.name;
+            int currentPlayerPoints = currentPlayer.points;
+            int competitorPoints = competitor.points;
             string score = $"{currentPlayerPoints} - {competitorPoints}";
 
             ListView currentListView = GetCurrentListView(currentPlayerPoints, competitorPoints);
@@ -81,20 +72,13 @@ namespace Tennis_App
                 return this.listViewDraw;
             }
         }
-        private void AddDataToListView(string competitor, string score, ListView listView)
+        static private void AddDataToListView(string competitor, string score, ListView listView)
         {
-            ListViewItem listViewItem = new ListViewItem();
+            ListViewItem listViewItem = new();
             listViewItem.SubItems[0].Text = competitor;
             listViewItem.SubItems.Add(score);
             listView.Items.Add(listViewItem);
         }
-
-
-        private void label1_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private void PlayerInfoForm_Load(object sender, EventArgs e)
         {
             FillVictoriesAndLossesListViews();

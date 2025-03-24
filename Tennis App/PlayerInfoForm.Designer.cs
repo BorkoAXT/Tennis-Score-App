@@ -63,7 +63,6 @@
             labelVictories.Size = new Size(79, 25);
             labelVictories.TabIndex = 1;
             labelVictories.Text = "Victories";
-            labelVictories.Click += label1_Click;
             // 
             // labelLosses
             // 
